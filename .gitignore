@@ -1,1 +1,9 @@
+# Python cache (Python o'zi yaratadi)
+__pycache__/
+*.pyc
+
+# Dasturning ish ma'lumotlari
 database.txt
+
+# VS Code sozlamalari
+.vscode/
