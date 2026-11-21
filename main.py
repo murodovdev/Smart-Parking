@@ -9,6 +9,7 @@ def save_data(action, lot_name, slot_name, v_num, v_typ):
     now = datetime.now().strftime("%Y-%m-%d %H:%M")  # current time
     with open("database.txt", "a") as file:
         file.write(f"{action}|{now}|{lot_name}|{slot_name}|{v_num}|{v_typ}\n")
+    return now
 
 
 # load data
@@ -118,7 +119,7 @@ def vehicle_entry():
                     "-----------------------------------\n"
                     f"Vehicle Number : {v_number}\n"
                     f"Vehicle Type   : {v_type}\n"
-                    f"Parking Space  : {lot_name} - {slot_name}\n"
+                    f"Parking Space  : {lot_name} - {user_choice}\n"
                     f"Entry Time     : {now}\n"
                 )
             else:
@@ -130,6 +131,7 @@ def vehicle_entry():
 
 # main program
 restore_parking_state()
+vehicle_exit = exit_.Exit(parking_lot, load_data, save_data)
 
 while True:
     print(
@@ -157,6 +159,6 @@ while True:
     elif command == 1:
         vehicle_entry()
     elif command == 2:
-        print
+        vehicle_exit.run()
     else:
         print("Invalid option!")
