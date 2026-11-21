@@ -95,7 +95,15 @@ def vehicle_entry():
         lot_name, slot_name = result
         parking_lot[lot_name][slot_name] = 1
         save_data("Enter", lot_name, slot_name, v_number, v_type)
-        print(f"Successfully parked at {lot_name} - {slot_name}")
+        now = datetime.now().strftime("%Y-%m-%d %H:%M")
+        print(
+            "\nVehicle successfully parked!\n"
+            "-----------------------------------\n"
+            f"Vehicle Number : {v_number}\n"
+            f"Vehicle Type   : {v_type}\n"
+            f"Parking Space  : {lot_name} - {slot_name}\n"
+            f"Entry Time     : {now}\n"
+        )
         return
 
     # Other than Enter
@@ -104,7 +112,15 @@ def vehicle_entry():
             if slots[user_choice] == 0:
                 slots[user_choice] = 1
                 save_data("Enter", lot_name, user_choice, v_number, v_type)
-                print(f"Successfully parked at {lot_name} - {user_choice}")
+                now = datetime.now().strftime("%Y-%m-%d %H:%M")
+                print(
+                    "\nVehicle successfully parked!\n"
+                    "-----------------------------------\n"
+                    f"Vehicle Number : {v_number}\n"
+                    f"Vehicle Type   : {v_type}\n"
+                    f"Parking Space  : {lot_name} - {slot_name}\n"
+                    f"Entry Time     : {now}\n"
+                )
             else:
                 print("This parking slot is already occupied!")
             return
