@@ -1,120 +1,126 @@
 import time
 from datetime import datetime
+from parking_lot_data import parking_lot
 
-print(
-    "     Smart Parking Managment \n"
-    "1. Vehical Entry \n"
-    "2. Vehical Exit \n"
-    "3. View Parking Status \n"
-    "4. Search Vehicle \n"
-    "5. View Available Spaace \n"
-    "6. View Parking History \n"
-    "7. Parking Revenue Report \n"
-    "8. Manage Parking Space \n"
-    "9. Setting \n"
-    "0. Exit"
-)
-
-parking_lot = {
-    "A Lot": {
-        "A01": 0,
-        "A02": 0,
-        "A03": 0,
-        "A04": 0,
-        "A05": 0,
-        "A06": 0,
-        "A07": 0,
-        "A08": 0,
-        "A09": 0,
-        "A10": 0,
-    },
-    "B Lot": {
-        "B01": 0,
-        "B02": 0,
-        "B03": 0,
-        "B04": 0,
-        "B05": 0,
-        "B06": 0,
-        "B07": 0,
-        "B08": 0,
-        "B09": 0,
-        "B10": 0,
-    },
-    "C Lot": {
-        "C01": 0,
-        "C02": 0,
-        "C03": 0,
-        "C04": 0,
-        "C05": 0,
-        "C06": 0,
-        "C07": 0,
-        "C08": 0,
-        "C09": 0,
-        "C10": 0,
-    },
-}
-_ntime = datetime.now().strftime("%Y-%m-%d %H:%M")
-
-command = int(input("Select an option: "))
-
-
+# SAVE DATA
 def save_data(action, lot_name, slot_name, v_num, v_typ):
+    now = datetime.now().strftime("%Y-%m-%d %H:%M")  #current time
     with open("database.txt", "a") as file:
-        file.write(f"{action}|{_ntime}|{lot_name}|{slot_name}|{v_num}|{v_typ}\n")
+        file.write(f"{action}|{now}|{lot_name}|{slot_name}|{v_num}|{v_typ}\n")
 
-
+# LOAD DATA
 def load_data():
-    with open("database.txt", "r") as file:
-        for line in file:
-            entity = line.strip().split("|")
-            return entity[0], entity[1], entity[2], entity[3], entity[4]
-            # 0-action, 1-time, 2-lot name, 3-slot name, 4-vehicle number, 5-vehivle type
+    records = []
+    try:
+        with open("database.txt", "r") as file:
+            for line in file:
+                data = line.strip().split("|")
+                if len(data) == 6:
+                    records.append(data)
+    except FileNotFoundError:
+        pass 
+    return records
+    # 0-action, 1-time, 2-lot name, 3-slot name, 4-vehicle number, 5-vehicle type
+
+def restore_parking_state():
+    for record in load_data():
+        action, lot_name, slot_name = record[0], record[2], record[3]
+        if action == "Enter":
+            parking_lot[lot_name][slot_name] = 1
+        elif action == "Exit":
+            parking_lot[lot_name][slot_name] = 0
 
 
-if command == 1:
+# FIND AVAILABLE SLOT
+def find_available_slot():
+    for lot_name, slots in parking_lot.items():
+        for slot_name, value in slots.items():
+            if value == 0:
+                return lot_name, slot_name
+    return None  # Parking is FUll
+
+
+# VEHICLE ENTRY
+def vehicle_entry():
     print("----------VEHICLE ENTRY----------")
-    v_number = input("Enter vehicle number: ")
-    v_type = input("Enter vehicle type: ")
+    v_number = input("Enter vehicle number: ").strip().upper()
+    if v_number == "":
+        print("Vehicle number cannot be empty!")
+        return
+    v_type = input("Enter vehicle type: ").strip()
 
+    # Loading Animation
     print("Checking available spaces", end="")
-    for i in range(1):
-        time.sleep(1)
+    for i in range(3):
+        time.sleep(0.3)
         print(".", end="")
     print("")
 
-    def find_available_slot():
-        for lot_name, slots in parking_lot.items():
-            for slot_name, value in slots.items():
-                if value == 0:
-                    return lot_name, slot_name
+    result = find_available_slot()
+    if result is None:
+        print("Sorry, parking is full!")
+        return
 
-
-result = find_available_slot()
-user_choice = (
-    input(
-        f"Available: {result[0]} - {result[1]}\n"
-        "Press Enter to choose or enter a slot name (e.g. B05): "
+    user_choice = (
+        input(
+            f"Available: {result[0]} - {result[1]}\n"
+            "Press Enter to choose or enter a slot name (e.g. B05): "
+        )
+        .strip()
+        .upper()
     )
-    .strip()
-    .upper()
-)
-
-if user_choice == "":
-    lot_name, slot_name = result
-    parking_lot[lot_name][slot_name] = 1
-    save_data("Enter", lot_name, slot_name, v_number, v_type)
-    print(f"Successfully parked at {lot_name} - {slot_name}")
-else:
-    found = False
+    
+    # Enter
+    if user_choice == "":
+        lot_name, slot_name = result
+        parking_lot[lot_name][slot_name] = 1
+        save_data("Enter", lot_name, slot_name, v_number, v_type)
+        print(f"Successfully parked at {lot_name} - {slot_name}")
+        return
+    
+    #Other than Enter
     for lot_name, slots in parking_lot.items():
         if user_choice in slots:
-            found = True
             if slots[user_choice] == 0:
                 slots[user_choice] = 1
                 save_data("Enter", lot_name, user_choice, v_number, v_type)
                 print(f"Successfully parked at {lot_name} - {user_choice}")
             else:
                 print("This parking slot is already occupied!")
-            break
-    if not found:
-        print("Invalid parking slot!")
+            return
+
+    print("Invalid parking slot!")
+
+
+# MAIN PROGRAM
+restore_parking_state()
+
+while True:
+    print(
+        "     Smart Parking Management \n"
+        "1. Vehicle Entry \n"
+        "2. Vehicle Exit \n"
+        "3. View Parking Status \n"
+        "4. Search Vehicle \n"
+        "5. View Available Space \n"
+        "6. View Parking History \n"
+        "7. Parking Revenue Report \n"
+        "8. Manage Parking Space \n"
+        "9. Settings \n"
+        "0. Exit"
+    )
+    try:
+        command = int(input("Select an option: "))
+    except ValueError:
+        print("Please enter a valid number!")
+        continue
+
+    if command == 0:
+        print("Thank you for using Smart Parking!")
+        break
+    elif command == 1:
+        vehicle_entry()
+    elif 2 <= command <= 9:
+        print("This option is not implemented yet!")
+    else:
+        print("Invalid option!")
