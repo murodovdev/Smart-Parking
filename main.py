@@ -2,6 +2,7 @@ import time
 from datetime import datetime
 from parking_lot_data import parking_lot
 import exit_
+import parking_status
 
 
 # save data
@@ -160,5 +161,7 @@ while True:
         vehicle_entry()
     elif command == 2:
         vehicle_exit.run()
+    elif command == 3:
+        parking_status.run(parking_lot,load_data())
     else:
         print("Invalid option!")
