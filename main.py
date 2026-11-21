@@ -1,14 +1,17 @@
 import time
 from datetime import datetime
 from parking_lot_data import parking_lot
+import exit_
 
-# SAVE DATA
+
+# save data
 def save_data(action, lot_name, slot_name, v_num, v_typ):
-    now = datetime.now().strftime("%Y-%m-%d %H:%M")  #current time
+    now = datetime.now().strftime("%Y-%m-%d %H:%M")  # current time
     with open("database.txt", "a") as file:
         file.write(f"{action}|{now}|{lot_name}|{slot_name}|{v_num}|{v_typ}\n")
 
-# LOAD DATA
+
+# load data
 def load_data():
     records = []
     try:
@@ -18,9 +21,10 @@ def load_data():
                 if len(data) == 6:
                     records.append(data)
     except FileNotFoundError:
-        pass 
+        pass
     return records
     # 0-action, 1-time, 2-lot name, 3-slot name, 4-vehicle number, 5-vehicle type
+
 
 def restore_parking_state():
     for record in load_data():
@@ -31,7 +35,7 @@ def restore_parking_state():
             parking_lot[lot_name][slot_name] = 0
 
 
-# FIND AVAILABLE SLOT
+# find available slot
 def find_available_slot():
     for lot_name, slots in parking_lot.items():
         for slot_name, value in slots.items():
@@ -40,19 +44,35 @@ def find_available_slot():
     return None  # Parking is FUll
 
 
-# VEHICLE ENTRY
+def is_vehicle_parked(v_number):
+    status = False
+    for data in load_data():
+        if data[4] == v_number:
+            if data[0] == "Enter":
+                status = True
+            elif data[0] == "Exit":
+                status = False
+    return status
+
+
+# vehicle entry
 def vehicle_entry():
     print("----------VEHICLE ENTRY----------")
     v_number = input("Enter vehicle number: ").strip().upper()
     if v_number == "":
         print("Vehicle number cannot be empty!")
         return
+    if is_vehicle_parked(v_number):
+        print("This vehicle already parked")
+        return
     v_type = input("Enter vehicle type: ").strip()
-
+    if v_type == "":
+        print("Vehicle type cannot be empty!")
+        return
     # Loading Animation
     print("Checking available spaces", end="")
     for i in range(3):
-        time.sleep(0.3)
+        time.sleep(0.6)
         print(".", end="")
     print("")
 
@@ -69,7 +89,7 @@ def vehicle_entry():
         .strip()
         .upper()
     )
-    
+
     # Enter
     if user_choice == "":
         lot_name, slot_name = result
@@ -77,8 +97,8 @@ def vehicle_entry():
         save_data("Enter", lot_name, slot_name, v_number, v_type)
         print(f"Successfully parked at {lot_name} - {slot_name}")
         return
-    
-    #Other than Enter
+
+    # Other than Enter
     for lot_name, slots in parking_lot.items():
         if user_choice in slots:
             if slots[user_choice] == 0:
@@ -92,7 +112,7 @@ def vehicle_entry():
     print("Invalid parking slot!")
 
 
-# MAIN PROGRAM
+# main program
 restore_parking_state()
 
 while True:
@@ -120,7 +140,7 @@ while True:
         break
     elif command == 1:
         vehicle_entry()
-    elif 2 <= command <= 9:
-        print("This option is not implemented yet!")
+    elif command == 2:
+        print
     else:
         print("Invalid option!")

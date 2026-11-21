@@ -1,0 +1,2 @@
+Enter|2026-11-21 12:11|A Lot|A01|AB123|Car
+Enter|2026-11-21 12:12|B Lot|B01|AB123|Car
