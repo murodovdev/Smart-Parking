@@ -1,4 +1,5 @@
 import time
+from datetime import datetime
 
 print(
     "     Smart Parking Managment \n"
@@ -52,8 +53,23 @@ parking_lot = {
         "C10": 0,
     },
 }
+_ntime = datetime.now().strftime("%Y-%m-%d %H:%M")
 
 command = int(input("Select an option: "))
+
+
+def save_data(action, lot_name, slot_name, v_num, v_typ):
+    with open("database.txt", "a") as file:
+        file.write(f"{action}|{_ntime}|{lot_name}|{slot_name}|{v_num}|{v_typ}\n")
+
+
+def load_data():
+    with open("database.txt", "r") as file:
+        for line in file:
+            entity = line.strip().split("|")
+            return entity[0], entity[1], entity[2], entity[3], entity[4]
+            # 0-action, 1-time, 2-lot name, 3-slot name, 4-vehicle number, 5-vehivle type
+
 
 if command == 1:
     print("----------VEHICLE ENTRY----------")
@@ -86,6 +102,7 @@ user_choice = (
 if user_choice == "":
     lot_name, slot_name = result
     parking_lot[lot_name][slot_name] = 1
+    save_data("Enter", lot_name, slot_name, v_number, v_type)
     print(f"Successfully parked at {lot_name} - {slot_name}")
 else:
     found = False
@@ -94,12 +111,10 @@ else:
             found = True
             if slots[user_choice] == 0:
                 slots[user_choice] = 1
+                save_data("Enter", lot_name, user_choice, v_number, v_type)
                 print(f"Successfully parked at {lot_name} - {user_choice}")
             else:
                 print("This parking slot is already occupied!")
             break
     if not found:
         print("Invalid parking slot!")
-
-
-print(parking_lot)
