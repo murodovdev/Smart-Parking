@@ -6,5 +6,4 @@ def run(parking_lot, load_data):
             print(f"{slot_name}", end="")
             print("[X]" if value == 1 else "[ ]", end=" ")
         print("")
-
         print("")

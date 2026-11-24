@@ -57,6 +57,30 @@ def is_vehicle_parked(v_number):
     return status
 
 
+def search_vehicle(v_number):
+    # 0-action, 1-time, 2-lot name, 3-slot name, 4-vehicle number, 5-vehicle type
+    for record in load_data():
+        number, type, space, time, status = (
+            record[4],
+            record[5],
+            record[3],
+            record[1],
+            record[0],
+        )
+        if number == v_number:
+            print(
+                "\n -----Vehicle Found-----",
+                f"\nVehicle Number : {number}\n"
+                f"Vehicle Type   : {type}\n"
+                f"Parking Space  : {space}\n"
+                f"Entry Time     : {time}\n"
+                f"Current Status : {"Parked\n" if status =="Enter" else "Not Parked\n"}",
+            )
+        else:
+            print("\nVehicle not found!\n")
+            break
+
+
 # vehicle entry
 def vehicle_entry():
     print("----------VEHICLE ENTRY----------")
@@ -141,11 +165,9 @@ while True:
         "2. Vehicle Exit \n"
         "3. View Parking Status \n"
         "4. Search Vehicle \n"
-        "5. View Available Space \n"
-        "6. View Parking History \n"
-        "7. Parking Revenue Report \n"
-        "8. Manage Parking Space \n"
-        "9. Settings \n"
+        "5. Parking Revenue Report \n"
+        "6. Manage Parking Space \n"
+        "7. Settings \n"
         "0. Exit"
     )
     try:
@@ -153,7 +175,6 @@ while True:
     except ValueError:
         print("Please enter a valid number!")
         continue
-
     if command == 0:
         print("Thank you for using Smart Parking!")
         break
@@ -162,6 +183,9 @@ while True:
     elif command == 2:
         vehicle_exit.run()
     elif command == 3:
-        parking_status.run(parking_lot,load_data())
+        parking_status.run(parking_lot, load_data())
+    elif command == 4:
+        search = input("Enter vehicle number: ")
+        search_vehicle(search)
     else:
         print("Invalid option!")
