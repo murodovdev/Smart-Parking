@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from utils import normalize_n
 class Exit:
     fee_per_minut = 5000
 
@@ -9,6 +9,7 @@ class Exit:
         self.save_data = save_data
 
     def find_vehicle(self, v_number):
+        v_number = normalize_n(v_number)
         status = None
         for data in self.load_data():
             if data[4] == v_number:
@@ -27,6 +28,7 @@ class Exit:
     def run(self):
         print("-----------Vehicle Exit----------")
         v_number = input("Enter Vehicle NUmber: ").strip().upper()
+        v_number=normalize_n(v_number)
         if v_number == "":
             print("Enter something!!")
             return

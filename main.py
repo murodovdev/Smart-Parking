@@ -3,6 +3,8 @@ from datetime import datetime
 from parking_lot_data import parking_lot
 import exit_
 import parking_status
+import revenue
+from utils import normalize_n
 
 
 # save data
@@ -28,6 +30,7 @@ def load_data():
     # 0-action, 1-time, 2-lot name, 3-slot name, 4-vehicle number, 5-vehicle type
 
 
+# resote data
 def restore_parking_state():
     for record in load_data():
         action, lot_name, slot_name = record[0], record[2], record[3]
@@ -46,7 +49,9 @@ def find_available_slot():
     return None  # Parking is FUll
 
 
+# check status
 def is_vehicle_parked(v_number):
+    v_number = normalize_n(v_number)
     status = False
     for data in load_data():
         if data[4] == v_number:
@@ -57,34 +62,41 @@ def is_vehicle_parked(v_number):
     return status
 
 
+# search
 def search_vehicle(v_number):
-    # 0-action, 1-time, 2-lot name, 3-slot name, 4-vehicle number, 5-vehicle type
+    v_number = normalize_n(v_number)
+    last = None
     for record in load_data():
-        number, type, space, time, status = (
-            record[4],
-            record[5],
-            record[3],
-            record[1],
-            record[0],
-        )
-        if number == v_number:
-            print(
-                "\n -----Vehicle Found-----",
-                f"\nVehicle Number : {number}\n"
-                f"Vehicle Type   : {type}\n"
-                f"Parking Space  : {space}\n"
-                f"Entry Time     : {time}\n"
-                f"Current Status : {"Parked\n" if status =="Enter" else "Not Parked\n"}",
-            )
-        else:
-            print("\nVehicle not found!\n")
-            break
+        if record[4] == v_number:
+            last = record
+
+    if last is None:
+        print("\nVehicle not found!\n")
+        return
+
+    action, time_, lot_name, slot_name, number, v_type = last
+    if action == "Enter":
+        status = "Parked"
+        time_label = "Entry Time    "
+    else:
+        status = "Not Parked"
+        time_label = "Last Exit Time"
+
+    print(
+        "\n-----Vehicle Found-----\n"
+        f"Vehicle Number : {number}\n"
+        f"Vehicle Type   : {v_type}\n"
+        f"Parking Space  : {lot_name} - {slot_name}\n"
+        f"{time_label} : {time_}\n"
+        f"Current Status : {status}\n"
+    )
 
 
 # vehicle entry
 def vehicle_entry():
     print("----------VEHICLE ENTRY----------")
     v_number = input("Enter vehicle number: ").strip().upper()
+    v_number = normalize_n(v_number)
     if v_number == "":
         print("Vehicle number cannot be empty!")
         return
@@ -185,7 +197,10 @@ while True:
     elif command == 3:
         parking_status.run(parking_lot, load_data())
     elif command == 4:
-        search = input("Enter vehicle number: ")
+        search = input("Enter vehicle number: ").strip().upper()
+        search = normalize_n(search)
         search_vehicle(search)
+    elif command == 5:
+        revenue.summary(load_data())
     else:
         print("Invalid option!")
