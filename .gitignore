@@ -2,7 +2,5 @@
 __pycache__/
 *.pyc
 
-# Dasturning ish ma'lumotlari
-
 # VS Code sozlamalari
 .vscode/
