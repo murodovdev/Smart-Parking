@@ -203,7 +203,7 @@ while True:
         revenue.summary(load_data())
     elif command == 6:
         print("----------Settings---------")
-        new_rate = int(input("Enter New Hourly Rate: ").strip())
+        new_rate = int(input("Enter New Rate: ").strip())
         with open("fee_per_minut.txt", "w") as file:
             file.write(str(new_rate))
         print("Hourly Rate Updated - ", new_rate)
