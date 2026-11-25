@@ -17,9 +17,6 @@ The project is built with Python's standard library and uses plain-text files fo
 - [Installation and Setup](#installation-and-setup)
 - [Running the Application](#running-the-application)
 - [Data Storage](#data-storage)
-- [Known Limitations](#known-limitations)
-- [Possible Improvements](#possible-improvements)
-- [License](#license)
 
 ## Overview
 
