@@ -2,7 +2,7 @@
 
 A Python command-line application for managing parking spaces, recording vehicle entry and exit events, calculating parking fees, and viewing basic parking and revenue information.
 
-The project is built with Python's standard library and uses plain-text files for data storage. It is designed as a beginner-friendly programming project that demonstrates functions, modules, dictionaries, loops, input validation, file handling, and basic object-oriented programming.
+The project is built with Python's standard library and uses plain-text files for data storage. This is my first Python project and it demonstrates functions, modules, dictionaries, loops, input validation, file handling, and basic object-oriented programming.
 
 ## Table of Contents
 
@@ -26,8 +26,6 @@ The project is built with Python's standard library and uses plain-text files fo
 Smart Parking Management provides a simple way to manage a parking facility from a terminal. When a vehicle arrives, the application checks whether it is already parked and finds an available space. When the vehicle leaves, the application records the exit time, calculates the parking fee, and makes the space available again.
 
 Parking activity is stored as an event log in `database.txt`. When the program starts, it reads this log to restore the occupied parking spaces.
-
-> **Project type:** Terminal / Command-Line Interface (CLI). This project does not currently include a graphical interface, web application, API, or external database.
 
 ## Features
 
@@ -110,8 +108,6 @@ The parking status view displays the three lots and marks occupied spaces with `
 The revenue report processes the saved entry and exit events. It pairs completed parking sessions, calculates their fees using the rate currently stored in `fee_per_minut.txt`, and displays the completed-session count, total revenue, and currently parked vehicle count.
 
 ## Fee Calculation
-
-Despite the current Settings prompt using the wording **Hourly Rate**, the implementation applies the configured value **per minute**, not per hour.
 
 The current configured value in `fee_per_minut.txt` is `5000`. The calculation is:
 
@@ -212,30 +208,3 @@ The application reads these records at startup to restore parking occupancy. It 
 ### `fee_per_minut.txt`
 
 This file contains one integer: the current parking fee per minute. The Settings menu overwrites the file when the rate is changed.
-
-> **Privacy note:** `database.txt` may contain license plate numbers and vehicle information. Before making the repository public, remove real or sensitive records and use anonymized example data. You can also keep your local event log out of Git by adding `database.txt` to `.gitignore`; the application can create the file when needed.
-
-## Known Limitations
-
-- The application is terminal-based and supports one local running instance; it is not a networked or multi-user parking service.
-- Data is stored in plain-text files rather than a relational database.
-- The Settings prompt says **Hourly Rate**, but the fee calculation uses a **per-minute** rate.
-- The current rate is applied to all sessions in the revenue report, including historical sessions; historical rates are not preserved per session.
-- The duration is stored and calculated to minute precision. Seconds are discarded.
-- The Settings input expects an integer. Invalid text input is not fully handled and may stop the program with an error.
-- The rate file must exist and contain a valid integer before an exit or revenue report is processed.
-- There is no automated test suite or authentication layer in the current version.
-
-## Possible Improvements
-
-- Add input validation for the Settings menu and reject zero or negative rates.
-- Rename the setting to **Rate per Minute**, or update the calculation if hourly billing is intended.
-- Store the rate used by each parking session so historical revenue remains accurate after rate changes.
-- Add date-range filters to the revenue report.
-- Separate sample data from real parking records and add a clean database initialization process.
-- Add automated tests for vehicle entry, exit, duplicate checks, fee calculation, and revenue reporting.
-- Move from plain-text files to SQLite if the project needs more reliable structured storage.
-
-## License
-
-No license file is currently included. Unless a license is added to the repository, reuse and redistribution permissions are not explicitly granted.
