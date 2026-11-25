@@ -11,7 +11,7 @@ from utils import normalize_n
 def save_data(action, lot_name, slot_name, v_num, v_typ):
     now = datetime.now().strftime("%Y-%m-%d %H:%M")  # current time
     with open("database.txt", "a") as file:
-        file.write(f"{action}|{now}|{lot_name}|{slot_name}|{v_num}|{v_typ}\n")
+        file.write(f"\n{action}|{now}|{lot_name}|{slot_name}|{v_num}|{v_typ}")
     return now
 
 
@@ -87,7 +87,7 @@ def search_vehicle(v_number):
         f"Vehicle Number : {number}\n"
         f"Vehicle Type   : {v_type}\n"
         f"Parking Space  : {lot_name} - {slot_name}\n"
-        f"{time_label} : {time_}\n"
+        f"{time_label}   : {time_}\n"
         f"Current Status : {status}\n"
     )
 
@@ -178,8 +178,7 @@ while True:
         "3. View Parking Status \n"
         "4. Search Vehicle \n"
         "5. Parking Revenue Report \n"
-        "6. Manage Parking Space \n"
-        "7. Settings \n"
+        "6. Settings \n"
         "0. Exit"
     )
     try:
@@ -202,5 +201,11 @@ while True:
         search_vehicle(search)
     elif command == 5:
         revenue.summary(load_data())
+    elif command == 6:
+        print("----------Settings---------")
+        new_rate = int(input("Enter New Hourly Rate: ").strip())
+        with open("fee_per_minut.txt", "w") as file:
+            file.write(str(new_rate))
+        print("Hourly Rate Updated - ", new_rate)
     else:
         print("Invalid option!")

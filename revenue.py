@@ -1,6 +1,9 @@
 from datetime import datetime
 
-def summary(data, fee_per_minute=5000):
+def summary(data):
+    fee_per_minut = 0
+    with open("fee_per_minut.txt", "r") as file:
+        fee_per_minut = int(file.read())
     save_transactions = []
     currently_parked = 0
 
@@ -13,7 +16,7 @@ def summary(data, fee_per_minute=5000):
                     start = datetime.strptime(time, "%Y-%m-%d %H:%M")
                     end = datetime.strptime(i[1], "%Y-%m-%d %H:%M")
                     minut = int((end - start).total_seconds() // 60)
-                    save_transactions.append(minut * fee_per_minute)
+                    save_transactions.append(minut * fee_per_minut)
                     break
 
     currently_parked = len(data) - (len(save_transactions) * 2)

@@ -1,8 +1,8 @@
 from datetime import datetime
 from utils import normalize_n
-class Exit:
-    fee_per_minut = 5000
 
+
+class Exit:
     def __init__(self, parking_lot, load_data, save_data):
         self.parking_lot = parking_lot
         self.load_data = load_data
@@ -12,7 +12,7 @@ class Exit:
         v_number = normalize_n(v_number)
         status = None
         for data in self.load_data():
-            if data[4] == v_number:
+            if normalize_n(data[4]) == v_number:
                 if data[0] == "Enter":
                     status = data
                 else:
@@ -28,7 +28,7 @@ class Exit:
     def run(self):
         print("-----------Vehicle Exit----------")
         v_number = input("Enter Vehicle NUmber: ").strip().upper()
-        v_number=normalize_n(v_number)
+        v_number = normalize_n(v_number)
         if v_number == "":
             print("Enter something!!")
             return
@@ -42,11 +42,16 @@ class Exit:
             slot_name,
             v_type,
         ) = found[1], found[2], found[3], found[5]
-        exit_time = self.save_data("Exit", lot_name, slot_name, v_number, v_type)
+        exit_time = self.save_data(
+            "Exit", lot_name, slot_name, normalize_n(v_number), v_type
+        )
         self.parking_lot[lot_name][slot_name] = 0
 
         minuts = self.calculate_minut(entry_time, exit_time)
-        fee = minuts * self.fee_per_minut
+        fee_per_minut = 0
+        with open("fee_per_minut.txt", "r") as file:
+            fee_per_minut = int(file.read())
+        fee = minuts * fee_per_minut
         print(
             "\nVehicle successfully exited!\n"
             "-----------------------------------\n"
