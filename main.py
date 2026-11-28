@@ -206,6 +206,6 @@ while True:
         new_rate = int(input("Enter New Rate: ").strip())
         with open("fee_per_minut.txt", "w") as file:
             file.write(str(new_rate))
-        print("Hourly Rate Updated - ", new_rate)
+        print("Rate per minute updated - ", new_rate)
     else:
         print("Invalid option!")
